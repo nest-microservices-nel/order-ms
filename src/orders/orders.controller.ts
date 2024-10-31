@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { PaginationDto } from 'src/common';
+import { PaginationDto } from '../common';
 import { ChangeStatusOrderDto, FindOrderByStatusDto } from './dto';
 
 @Controller()

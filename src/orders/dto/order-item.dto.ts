@@ -1,6 +1,6 @@
 import { IsNumber, IsPositive } from 'class-validator';
 
-export class OrderItem {
+export class OrderItemDto {
   @IsNumber()
   @IsPositive()
   productId: number;
