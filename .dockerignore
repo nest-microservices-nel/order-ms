@@ -1,4 +1,5 @@
-dist/
-node_module/
+node_modules
+.git
+*.log
+.DS_Store
 .env
-.vscode/
