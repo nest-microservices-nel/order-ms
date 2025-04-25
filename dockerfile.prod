@@ -1,0 +1,58 @@
+# Use multi-stage build dockerfile prod
+
+#==> Dependencies 
+FROM node:22-alpine3.19 AS deps
+
+WORKDIR /usr/src/app
+
+COPY package.json ./
+COPY package-lock.json ./
+
+RUN npm install
+
+#==> Builder
+FROM node:22-alpine3.19 AS build
+
+ARG ORDERS_DATABASE_URL_BUILD
+ENV DATABASE_URL=$ORDERS_DATABASE_URL_BUILD
+
+WORKDIR /usr/src/app
+
+# Se copian las dependencias descargadas en el paso anterior (deps stage).
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+
+# Se copia el codigo source (todo lo que no se incluya en el .dockerignore)
+COPY . .
+
+RUN npx prisma migrate deploy
+
+RUN npx prisma generate
+# Se pueden ejecutar comandos para testear el codigo y que si fallan no siga el build
+# RUN npm run test
+
+# Se compila a javascript
+RUN npm run build
+
+
+RUN npm ci -f --only=production
+RUN npm cache clean --force 
+
+#==> Create final docker image
+FROM node:22-alpine3.19 AS prod
+
+WORKDIR /usr/src/app
+
+COPY --from=build /usr/src/app/node_modules ./node_modules
+
+COPY --from=build /usr/src/app/dist ./dist
+
+ENV NODE_ENV=production
+
+USER node
+
+# la seleccion EXPOSE tiene funcionalidad en ciertos casos, por ejemplo si hay un docker-compose.yml la seleccion EXPOSE 
+# deja de "funcionar" o pasa a un segundo plano.Cuando la imagen se crea sola sin el docker-compose toma importancia el campo EXPOSE
+EXPOSE 3000
+
+# ENTRYPOINT [ 'node'. './dist/main.js' ]
+CMD [ "node", "dist/main.js" ]
