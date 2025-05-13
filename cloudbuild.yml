@@ -20,3 +20,4 @@ availableSecrets:
     env: 'DATABASE_URL'
 options:
   logging: CLOUD_LOGGING_ONLY
+  
