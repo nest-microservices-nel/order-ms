@@ -1,0 +1,20 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+    - -c
+    - |
+      docker build -t southamerica-east1-docker.pkg.dev/microservices-nats-nest/images-register-docker/products-ms-prod -f dockerfile.prod --platform=linux/amd64 --build-arg ORDERS_DATABASE_URL=$$DATABASE_URL .
+  secretEnv: ['DATABASE_URL']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'push',
+      'southamerica-east1-docker.pkg.dev/microservices-nats-nest/images-register-docker/products-ms-prod',
+    ]
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/62922609665/secrets/DATABASE_URL_ORDERS/versions/1
+    env: 'DATABASE_URL'
