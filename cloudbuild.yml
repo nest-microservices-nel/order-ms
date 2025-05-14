@@ -5,13 +5,13 @@ steps:
     - -c
     - |
       docker build -t southamerica-east1-docker.pkg.dev/microservices-nats-nest/images-register-docker/products-ms-prod -f dockerfile.prod --platform=linux/amd64 --build-arg ORDERS_DATABASE_URL_BUILD=$$DATABASE_URL .
-  secretEnv: ['DATABASE_URL']
+  secretEnv: ['ORDERS_DATABASE_URL_BUILD']
 
 - name: 'gcr.io/cloud-builders/docker'
   args:
     [
       'push',
-      'southamerica-east1-docker.pkg.dev/microservices-nats-nest/images-register-docker/products-ms-prod',
+      'southamerica-east1-docker.pkg.dev/microservices-nats-nest/images-register-docker/orders-ms-prod',
     ]
 
 availableSecrets:
@@ -20,4 +20,4 @@ availableSecrets:
     env: 'DATABASE_URL'
 options:
   logging: CLOUD_LOGGING_ONLY
-  
+  # second try
