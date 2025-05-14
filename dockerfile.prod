@@ -16,6 +16,9 @@ FROM node:22-alpine3.19 AS build
 ARG ORDERS_DATABASE_URL_BUILD
 ENV DATABASE_URL=$ORDERS_DATABASE_URL_BUILD
 
+# Imprimir el are para
+RUN echo "database_url ::: $ORDERS_DATABASE_URL_BUILD"
+
 WORKDIR /usr/src/app
 
 # Se copian las dependencias descargadas en el paso anterior (deps stage).
